@@ -1,0 +1,16 @@
+{
+  "name": "pg-query-tag",
+  "version": "0.0.3",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/pg": "^8.6.4",
+    "typescript": "^4.5.5"
+  }
+}
