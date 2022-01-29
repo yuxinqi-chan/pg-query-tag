@@ -89,7 +89,7 @@ function query(literals) {
 exports.query = query;
 function transaction(func) {
     return __awaiter(this, void 0, void 0, function () {
-        var client, q, e_1;
+        var client, q, result, e_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -106,9 +106,9 @@ function transaction(func) {
                     _a.trys.push([2, 4, , 5]);
                     return [4 /*yield*/, func(q)];
                 case 3:
-                    _a.sent();
+                    result = _a.sent();
                     q(templateObject_2 || (templateObject_2 = __makeTemplateObject(["COMMIT"], ["COMMIT"])));
-                    return [3 /*break*/, 5];
+                    return [2 /*return*/, result];
                 case 4:
                     e_1 = _a.sent();
                     q(templateObject_3 || (templateObject_3 = __makeTemplateObject(["ROLLBACK"], ["ROLLBACK"])));

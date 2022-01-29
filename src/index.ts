@@ -44,7 +44,7 @@ export function query<R extends QueryResultRow = any, I extends any[] = any[]>(
     return pool.query<R, I>(text, values);
 }
 
-export async function transaction(func: (q: typeof query) => Promise<void>) {
+export async function transaction<R>(func: (q: typeof query) => Promise<R>) {
     if (!pool) {
         throw new Error('pg pool not set');
     }
@@ -52,8 +52,9 @@ export async function transaction(func: (q: typeof query) => Promise<void>) {
     const q = createQuery(client);
     q`BEGIN`;
     try {
-        await func(q);
+        let result = await func(q);
         q`COMMIT`;
+        return result;
     } catch (e) {
         q`ROLLBACK`;
         throw e;
