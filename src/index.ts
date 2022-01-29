@@ -2,7 +2,7 @@ import {Pool, PoolClient, QueryResultRow} from 'pg';
 
 let pool: Pool | undefined;
 
-export function setPool(p: Pool, schema?: string) {
+export function setPool(p: Pool, schema?: string | null) {
     pool = p;
     pool.on('connect', (client) => {
         client.query(`SET search_path TO ${schema}`);
