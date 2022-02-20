@@ -3,7 +3,12 @@
 ## Install
 
 ```bash
+npm install pg
 npm install pg-query-tag
+```
+get help with typescript
+```bash
+npm install -D @types/pg
 ```
 
 ## Usage
