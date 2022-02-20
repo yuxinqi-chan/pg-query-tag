@@ -41,15 +41,25 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.transaction = exports.query = exports.createQuery = exports.setPool = void 0;
+var pg_1 = require("pg");
 var pool;
 function setPool(p, schema) {
     pool = p;
-    pool.on('connect', function (client) {
-        client.query("SET search_path TO ".concat(schema));
-    });
+    if (schema) {
+        pool.on("connect", function (client) {
+            client.query("SET search_path TO ".concat(schema));
+        });
+    }
 }
 exports.setPool = setPool;
 function createQuery(client) {
+    var _client;
+    if (typeof client === "string") {
+        _client = new pg_1.Pool({ connectionString: client });
+    }
+    else {
+        _client = client;
+    }
     function query(literals) {
         var values = [];
         for (var _i = 1; _i < arguments.length; _i++) {
@@ -62,8 +72,8 @@ function createQuery(client) {
             else {
                 return queryText + literal;
             }
-        }, '');
-        return client.query(text, values);
+        }, "");
+        return _client.query(text, values);
     }
     return query;
 }
@@ -74,7 +84,7 @@ function query(literals) {
         values[_i - 1] = arguments[_i];
     }
     if (!pool) {
-        throw new Error('pg pool not set');
+        throw new Error("pg pool not set");
     }
     var text = literals.reduce(function (queryText, literal, i) {
         if (i !== literals.length - 1) {
@@ -83,7 +93,7 @@ function query(literals) {
         else {
             return queryText + literal;
         }
-    }, '');
+    }, "");
     return pool.query(text, values);
 }
 exports.query = query;
@@ -94,7 +104,7 @@ function transaction(func) {
             switch (_a.label) {
                 case 0:
                     if (!pool) {
-                        throw new Error('pg pool not set');
+                        throw new Error("pg pool not set");
                     }
                     return [4 /*yield*/, pool.connect()];
                 case 1:
