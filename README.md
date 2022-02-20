@@ -8,7 +8,8 @@ npm install pg-query-tag
 
 ## Usage
 
-### setPool
+### init query tag
+set global pool then you can use query tag everywhere
 
 ```typescript
 import {Pool} from 'pg';
@@ -19,11 +20,17 @@ const pool = new Pool({
 })
 // setPool before use query
 setPool(pool);
-//or set pool and schema
+// or set pool and schema
 setPool(pool, 'public');
 ```
+or just create a query tag
+```typescript
+import {createQuery} from 'pg-query-tag';
 
-### query
+const query = createQuery('postgres://postgres:postgres@localhost:5432/postgres')
+```
+
+### use query tag
 
 ```typescript
 //...
@@ -32,7 +39,7 @@ const result = await query`select * from users where id = ${id}`;
 console.log(result.rows)
 ```
 
-### transaction
+### use transaction
 
 ```typescript
 //...
