@@ -75,6 +75,7 @@ function createQuery(client) {
         }, "");
         return _client.query(text, values);
     }
+    query.client = _client;
     return query;
 }
 exports.createQuery = createQuery;
@@ -109,7 +110,21 @@ function transaction(func) {
                     return [4 /*yield*/, pool.connect()];
                 case 1:
                     client = _a.sent();
-                    q = createQuery(client);
+                    q = function query(literals) {
+                        var values = [];
+                        for (var _i = 1; _i < arguments.length; _i++) {
+                            values[_i - 1] = arguments[_i];
+                        }
+                        var text = literals.reduce(function (queryText, literal, i) {
+                            if (i !== literals.length - 1) {
+                                return queryText + literal + "$".concat(i + 1);
+                            }
+                            else {
+                                return queryText + literal;
+                            }
+                        }, "");
+                        return client.query(text, values);
+                    };
                     q(templateObject_1 || (templateObject_1 = __makeTemplateObject(["BEGIN"], ["BEGIN"])));
                     _a.label = 2;
                 case 2:
