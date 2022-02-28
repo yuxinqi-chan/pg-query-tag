@@ -1,4 +1,4 @@
-import { Pool, PoolClient, QueryResultRow } from "pg";
+import { Pool, Client, QueryResultRow } from "pg";
 
 let pool: Pool | undefined;
 
@@ -11,8 +11,8 @@ export function setPool(p: Pool, schema?: string | null) {
   }
 }
 
-export function createQuery(client: PoolClient | Pool | string) {
-  let _client: PoolClient | Pool;
+export function createQuery(client: Client | Pool | string) {
+  let _client: Client | Pool;
   if (typeof client === "string") {
     _client = new Pool({ connectionString: client });
   } else {
@@ -31,7 +31,7 @@ export function createQuery(client: PoolClient | Pool | string) {
     }, "");
     return _client.query<R, I>(text, values);
   }
-
+  query.client = _client;
   return query;
 }
 
@@ -57,7 +57,19 @@ export async function transaction<R>(func: (q: typeof query) => Promise<R>) {
     throw new Error("pg pool not set");
   }
   let client = await pool.connect();
-  const q = createQuery(client);
+  const q = function query<R extends QueryResultRow = any, I extends any[] = any[]>(
+    literals: ReadonlyArray<string>,
+    ...values: I
+  ) {
+    let text = literals.reduce((queryText, literal, i) => {
+      if (i !== literals.length - 1) {
+        return queryText + literal + `$${i + 1}`;
+      } else {
+        return queryText + literal;
+      }
+    }, "");
+    return client.query<R, I>(text, values);
+  };
   q`BEGIN`;
   try {
     let result = await func(q);

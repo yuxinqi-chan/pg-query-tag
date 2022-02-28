@@ -33,15 +33,11 @@ or just create a query tag
 import {createQuery} from 'pg-query-tag';
 
 const query = createQuery('postgres://postgres:postgres@localhost:5432/postgres')
-```
 
-### use query tag
-
-```typescript
-//...
 const id = 1;
 const result = await query`select * from users where id = ${id}`;
 console.log(result.rows)
+await query.client.end()
 ```
 
 ### use transaction
